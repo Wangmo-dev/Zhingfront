@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 class GroupMaizePage extends StatefulWidget {
+  const GroupMaizePage({super.key});
+
   @override
   _GroupMaizePageState createState() => _GroupMaizePageState();
 }

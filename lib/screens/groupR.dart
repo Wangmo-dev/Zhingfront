@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 class GroupRicePage extends StatefulWidget {
+  const GroupRicePage({super.key});
+
   @override
   _GroupRicePageState createState() => _GroupRicePageState();
 }

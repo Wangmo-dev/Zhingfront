@@ -88,7 +88,7 @@ class _CommunityPageState extends State<CommunityPage2> {
                       title: community['title'],
                       imagePath: community['imagePath'],
                     );
-                  }).toList(),
+                  }),
                 ],
               ),
             ),
@@ -221,8 +221,8 @@ class _CommunityPageState extends State<CommunityPage2> {
   }
 
   void _showAddCommunityDialog(BuildContext context) {
-    final TextEditingController _nameController = TextEditingController();
-    String? _imagePath;
+    final TextEditingController nameController = TextEditingController();
+    String? imagePath;
 
     showDialog(
       context: context,
@@ -235,7 +235,7 @@ class _CommunityPageState extends State<CommunityPage2> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   TextField(
-                    controller: _nameController,
+                    controller: nameController,
                     decoration: const InputDecoration(labelText: 'Community Name'),
                   ),
                   const SizedBox(height: 10),
@@ -243,7 +243,7 @@ class _CommunityPageState extends State<CommunityPage2> {
                     onPressed: () async {
                       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
                       if (image != null) {
-                        setStateDialog(() => _imagePath = image.path);
+                        setStateDialog(() => imagePath = image.path);
                       }
                     },
                     icon: const Icon(Icons.image),
@@ -253,7 +253,7 @@ class _CommunityPageState extends State<CommunityPage2> {
                       foregroundColor: Colors.white,
                     ),
                   ),
-                  if (_imagePath != null)
+                  if (imagePath != null)
                     Padding(
                       padding: const EdgeInsets.only(top: 8.0),
                       child: Text(
@@ -271,23 +271,23 @@ class _CommunityPageState extends State<CommunityPage2> {
               ),
               ElevatedButton(
                 onPressed: () {
-                  final name = _nameController.text.trim();
-                  if (name.isNotEmpty && _imagePath != null) {
+                  final name = nameController.text.trim();
+                  if (name.isNotEmpty && imagePath != null) {
                     setState(() {
                       userCommunities.add({
                         'title': name,
-                        'imagePath': _imagePath!,
+                        'imagePath': imagePath!,
                       });
                       joinedGroups[name] = false;
                     });
                     Navigator.pop(context);
                   }
                 },
-                child: const Text('Add'),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF116736),
                   foregroundColor: Colors.white,
                 ),
+                child: const Text('Add'),
               ),
             ],
           );

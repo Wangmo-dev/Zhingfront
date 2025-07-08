@@ -113,14 +113,14 @@ class _AdminReportPageState extends State<AdminReportPage> {
   }
 
   void _showMessageDialog(String name) {
-    final TextEditingController _controller = TextEditingController();
+    final TextEditingController controller = TextEditingController();
 
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Message $name'),
         content: TextField(
-          controller: _controller,
+          controller: controller,
           maxLines: 5,
           decoration: InputDecoration(
             hintText: 'Type your message here...',

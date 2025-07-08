@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 
 class GroupPotatoPage extends StatefulWidget {
+  const GroupPotatoPage({super.key});
+
   @override
   _GroupPotatoPageState createState() => _GroupPotatoPageState();
 }
