@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:frontend/services/api_service.dart';
+import 'package:frontend/services/Api_service.dart';
 import 'package:frontend/services/auth_service.dart';
 
 class UserReportPage extends StatefulWidget {
@@ -21,30 +21,27 @@ class _UserReportPageState extends State<UserReportPage> {
   }
 
   Future<void> _fetchForwardedScans() async {
-  try {
-    final token = await AuthService.getToken();
-    if (token == null) throw Exception('Token not found');
+    try {
+      final token = await AuthService.getToken();
+      if (token == null) throw Exception('Token not found');
 
-    final userData = await ApiService().getCurrentUser(token: token);
-    final userCid = userData['user']['cid'];
+      final userData = await ApiService().getCurrentUser(token: token);
+      final userCid = userData['user']['cid'];
 
-    final allScans = await ApiService().getForwardedScans(token: token);
+      final allScans = await ApiService().getForwardedScans(token: token);
 
-    final userScans = allScans
-        .where((scan) => scan['user']?['cid'] == userCid)
-        .toList();
+      final userScans =
+          allScans.where((scan) => scan['user']?['cid'] == userCid).toList();
 
-    setState(() {
-      _forwardedScans = userScans;
-      _isLoading = false;
-    });
-  } catch (e) {
-    print('[ERROR] $e');
-    setState(() => _isLoading = false);
+      setState(() {
+        _forwardedScans = userScans;
+        _isLoading = false;
+      });
+    } catch (e) {
+      print('[ERROR] $e');
+      setState(() => _isLoading = false);
+    }
   }
-}
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -72,23 +69,25 @@ class _UserReportPageState extends State<UserReportPage> {
           ),
         ],
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _forwardedScans.isEmpty
+      body:
+          _isLoading
+              ? Center(child: CircularProgressIndicator())
+              : _forwardedScans.isEmpty
               ? Center(child: Text("No forwarded scans found."))
               : ListView.builder(
-                  padding: EdgeInsets.all(16),
-                  itemCount: _forwardedScans.length,
-                  itemBuilder: (context, index) {
-                    final scan = _forwardedScans[index];
-                    final disease = scan['diseaseDetected'] ?? 'Unknown';
-                    final imageUrl = scan['imageUrl'] ?? '';
-                    final date = DateTime.tryParse(scan['date'] ?? '') ?? DateTime.now();
-                    final status = scan['status'] ?? 'Unknown';
+                padding: EdgeInsets.all(16),
+                itemCount: _forwardedScans.length,
+                itemBuilder: (context, index) {
+                  final scan = _forwardedScans[index];
+                  final disease = scan['diseaseDetected'] ?? 'Unknown';
+                  final imageUrl = scan['imageUrl'] ?? '';
+                  final date =
+                      DateTime.tryParse(scan['date'] ?? '') ?? DateTime.now();
+                  final status = scan['status'] ?? 'Unknown';
 
-                    return _buildScanCard(disease, imageUrl, date, status);
-                  },
-                ),
+                  return _buildScanCard(disease, imageUrl, date, status);
+                },
+              ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: 1,
         selectedItemColor: Color(0xFF116736),
@@ -112,77 +111,90 @@ class _UserReportPageState extends State<UserReportPage> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.report), label: "Report"),
-          BottomNavigationBarItem(icon: Icon(Icons.qr_code_scanner), label: "Scan"),
-          BottomNavigationBarItem(icon: Icon(Icons.support_agent), label: "Support"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.qr_code_scanner),
+            label: "Scan",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.support_agent),
+            label: "Support",
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildScanCard(String disease, String imageUrl, DateTime date, String status) {
-  return Card(
-    margin: EdgeInsets.only(bottom: 16),
-    elevation: 2,
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    child: Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Disease name and status in a row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Expanded(
-                child: Text(
-                  disease,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
+  Widget _buildScanCard(
+    String disease,
+    String imageUrl,
+    DateTime date,
+    String status,
+  ) {
+    return Card(
+      margin: EdgeInsets.only(bottom: 16),
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Disease name and status in a row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    disease,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ),
-              ),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: status == "Pending" ? Colors.orange[100] : Colors.green[100],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    color: status == "Pending" ? Colors.orange[800] : Colors.green[800],
-                    fontSize: 14,
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  decoration: BoxDecoration(
+                    color:
+                        status == "Pending"
+                            ? Colors.orange[100]
+                            : Colors.green[100],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Text(
+                    status,
+                    style: TextStyle(
+                      color:
+                          status == "Pending"
+                              ? Colors.orange[800]
+                              : Colors.green[800],
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-          SizedBox(height: 12),
-
-          // Image
-          if (imageUrl.isNotEmpty)
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Image.network(
-                imageUrl,
-                height: 180,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              ],
             ),
+            SizedBox(height: 12),
 
-          SizedBox(height: 12),
+            // Image
+            if (imageUrl.isNotEmpty)
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.network(
+                  imageUrl,
+                  height: 180,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+              ),
 
-          // Date
-          Text(
-            DateFormat('MMM dd, yyyy').format(date),
-            style: TextStyle(color: Colors.grey[600], fontSize: 14),
-          ),
-        ],
+            SizedBox(height: 12),
+
+            // Date
+            Text(
+              DateFormat('MMM dd, yyyy').format(date),
+              style: TextStyle(color: Colors.grey[600], fontSize: 14),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }
